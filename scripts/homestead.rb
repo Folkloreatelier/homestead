@@ -151,8 +151,10 @@ class Homestead
         s.path = scriptDir + "/clear-nginx.sh"
     end
 
-
     if settings.include? 'sites'
+      
+      suffixes = (settings["map_suffix"] ||= "").split(" ")
+      
       settings["sites"].each do |site|
         type = site["type"] ||= "laravel"
 
@@ -163,11 +165,32 @@ class Homestead
         if (type == "symfony")
           type = "symfony2"
         end
+        
+        map = site["map"]
+        map_with_suffix = site["map"]
+        aliases = (site["alias"] ||= ("www."+site["map"])).split(" ")
+        aliases_with_suffix = []
+        
+        i = 0;
+        suffixes.each do |suffix|
+          if (i == 0)
+            map_with_suffix = map + suffix
+          else
+            aliases_with_suffix.push(map+suffix)
+          end
+          i = i+1
+        end
+        
+        aliases.each do |map_alias|
+          suffixes.each do |suffix|
+            aliases_with_suffix.push(map_alias+suffix)
+          end
+        end
 
         config.vm.provision "shell" do |s|
           s.name = "Creating Site: " + site["map"]
           s.path = scriptDir + "/serve-#{type}.sh"
-          s.args = [site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443"]
+          s.args = [map_with_suffix, site["to"], site["port"] ||= "80", site["ssl"] ||= "443", aliases_with_suffix.join(" ")]
         end
 
         # Configure The Cron Schedule

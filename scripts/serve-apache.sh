@@ -26,7 +26,7 @@ block="<VirtualHost *:80>
 
        ServerAdmin webmaster@localhost
        ServerName $1
-       ServerAlias www.$1
+       ServerAlias $5
        DocumentRoot $2
 
        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
