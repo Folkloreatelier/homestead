@@ -154,6 +154,7 @@ class Homestead
     if settings.include? 'sites'
       
       suffixes = (settings["map_suffix"] ||= "").split(" ")
+      suffixes.push("")
       
       settings["sites"].each do |site|
         type = site["type"] ||= "laravel"
