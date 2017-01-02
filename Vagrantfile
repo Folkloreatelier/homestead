@@ -4,7 +4,7 @@
 require 'json'
 require 'yaml'
 
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION ||= "2"
 confDir = $confDir ||= File.expand_path("~/.homestead")
 
 homesteadYamlPath = confDir + "/Homestead.yaml"
@@ -18,7 +18,10 @@ Vagrant.require_version '>= 1.8.4'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     if File.exist? aliasesPath then
-        config.vm.provision "file", source: aliasesPath, destination: "~/.bash_aliases"
+        config.vm.provision "file", source: aliasesPath, destination: "/tmp/bash_aliases"
+        config.vm.provision "shell" do |s|
+          s.inline = "awk '{ sub(\"\r$\", \"\"); print }' /tmp/bash_aliases > /home/vagrant/.bash_aliases"
+        end
     end
 
     if File.exist? homesteadYamlPath then
