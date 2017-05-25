@@ -99,13 +99,6 @@ class Homestead
             end
         end
 
-    if settings.include? 'sites'
-
-      suffixes = (settings["map_suffix"] ||= "").split(" ")
-      suffixes.push("")
-
-      settings["sites"].each do |site|
-        type = site["type"] ||= "laravel"
         # Configure The Public Key For SSH Access
         if settings.include? 'authorize'
             if File.exists? File.expand_path(settings["authorize"])
@@ -169,34 +162,38 @@ class Homestead
             end
         end
 
-        map = site["map"]
-        map_with_suffix = site["map"]
-        aliases = (site["alias"] ||= ("www."+site["map"])).split(" ")
-        aliases_with_suffix = []
-
-        i = 0;
-        suffixes.each do |suffix|
-          if (i == 0)
-            map_with_suffix = map + suffix
-          else
-            aliases_with_suffix.push(map+suffix)
-          end
-          i = i+1
-        end
-
-        aliases.each do |map_alias|
-          suffixes.each do |suffix|
-            aliases_with_suffix.push(map_alias+suffix)
-          end
-        end
-
         # Install All The Configured Nginx Sites
         config.vm.provision "shell" do |s|
             s.path = scriptDir + "/clear-nginx.sh"
         end
 
         if settings.include? 'sites'
+
+            suffixes = (settings["map_suffix"] ||= "").split(" ")
+            suffixes.push("")
+
             settings["sites"].each do |site|
+
+                map = site["map"]
+                map_with_suffix = site["map"]
+                aliases = (site["alias"] ||= ("www."+site["map"])).split(" ")
+                aliases_with_suffix = []
+
+                i = 0;
+                suffixes.each do |suffix|
+                  if (i == 0)
+                    map_with_suffix = map + suffix
+                  else
+                    aliases_with_suffix.push(map+suffix)
+                  end
+                  i = i+1
+                end
+
+                aliases.each do |map_alias|
+                  suffixes.each do |suffix|
+                    aliases_with_suffix.push(map_alias+suffix)
+                  end
+                end
 
                 # Create SSL certificate
                 config.vm.provision "shell" do |s|
