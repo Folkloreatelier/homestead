@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-declare -A params=$5     # Create an associative array
+declare -A params=$6     # Create an associative array
 paramsTXT=""
-if [ -n "$5" ]; then
+if [ -n "$6" ]; then
    for element in "${!params[@]}"
    do
       paramsTXT="${paramsTXT}
@@ -12,7 +12,7 @@ fi
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
-    server_name $1 $6;
+    server_name $1 $7;
     root \"$2\";
 
     index index.html index.htm index.php;
@@ -35,7 +35,7 @@ block="server {
 
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php$5-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
@@ -53,8 +53,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$7.crt;
-    ssl_certificate_key /etc/nginx/ssl/$7.key;
+    ssl_certificate     /etc/nginx/ssl/$8.crt;
+    ssl_certificate_key /etc/nginx/ssl/$8.key;
 }
 "
 
