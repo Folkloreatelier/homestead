@@ -28,7 +28,7 @@ block="<VirtualHost *:$3>
 
     ServerAdmin webmaster@localhost
     ServerName $1
-    ServerAlias www.$1 $6
+    ServerAlias www.$1 $8
     DocumentRoot "$2"
     $paramsTXT
 
@@ -65,7 +65,7 @@ blockssl="<IfModule mod_ssl.c>
 
         ServerAdmin webmaster@localhost
         ServerName $1
-        ServerAlias www.$1
+        ServerAlias www.$1 $8
         DocumentRoot "$2"
         $paramsTXT
 
@@ -102,8 +102,8 @@ blockssl="<IfModule mod_ssl.c>
         #SSLCertificateFile  /etc/ssl/certs/ssl-cert-snakeoil.pem
         #SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 
-        SSLCertificateFile      /etc/nginx/ssl/$1.crt
-        SSLCertificateKeyFile   /etc/nginx/ssl/$1.key
+        SSLCertificateFile      /etc/nginx/ssl/$9.crt
+        SSLCertificateKeyFile   /etc/nginx/ssl/$9.key
 
         #   Server Certificate Chain:
         #   Point SSLCertificateChainFile at a file containing the

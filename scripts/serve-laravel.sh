@@ -10,10 +10,19 @@ if [ -n "$6" ]; then
    done
 fi
 
+if [ "$7" = "true" ] && [ "$5" = "7.2" ]
+then configureZray="
+location /ZendServer {
+        try_files \$uri \$uri/ /ZendServer/index.php?\$args;
+}
+"
+else configureZray=""
+fi
+
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
-    server_name $1 $7;
+    server_name $1 $8;
     root \"$2\";
 
     index index.html index.htm index.php;
@@ -23,6 +32,8 @@ block="server {
     location / {
         try_files \$uri \$uri/ /index.php?\$query_string;
     }
+
+    $configureZray
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
@@ -54,8 +65,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$8.crt;
-    ssl_certificate_key /etc/nginx/ssl/$8.key;
+    ssl_certificate     /etc/nginx/ssl/$9.crt;
+    ssl_certificate_key /etc/nginx/ssl/$9.key;
 }
 "
 
