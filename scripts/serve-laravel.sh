@@ -30,7 +30,7 @@ block="server {
     charset utf-8;
 
     location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
+        try_files \$uri /index.php?\$query_string;
     }
 
     $configureZray
