@@ -31,7 +31,7 @@ fi
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
-    server_name $1 $10;
+    server_name $1 ${10};
     root \"$2\";
 
     index index.html index.htm index.php;
@@ -39,7 +39,7 @@ block="server {
     charset utf-8;
 
     location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
+        try_files \$uri /index.php?\$query_string;
         $headersTXT
     }
 
@@ -75,8 +75,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$11.crt;
-    ssl_certificate_key /etc/nginx/ssl/$11.key;
+    ssl_certificate     /etc/nginx/ssl/${11}.crt;
+    ssl_certificate_key /etc/nginx/ssl/${11}.key;
 }
 "
 
