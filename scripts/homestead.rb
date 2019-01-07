@@ -209,6 +209,9 @@ class Homestead
 
     if settings.include? 'sites'
 
+      socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
+      settings['sites'].unshift(socket)
+
       suffixes = (settings["map_suffix"] ||= "").split(" ")
       suffixes.push("")
 
@@ -436,6 +439,8 @@ class Homestead
 
     # Configure All Of The Configured Databases
     if settings.has_key?('databases')
+      settings['databases'].unshift('socket_wrench')
+
       settings['databases'].each do |db|
         config.vm.provision 'shell' do |s|
           s.name = 'Creating MySQL Database: ' + db
@@ -527,6 +532,11 @@ class Homestead
       s.path = script_dir + '/create-ngrok.sh'
       s.args = [settings['ip']]
       s.privileged = false
+    end
+
+    config.vm.provision 'shell' do |s|
+        s.name = 'Update motd'
+        s.inline = 'sudo service motd-news restart'
     end
 
     if settings.has_key?('backup') && settings['backup'] && (Vagrant::VERSION >= '2.1.0' || Vagrant.has_plugin?('vagrant-triggers'))
