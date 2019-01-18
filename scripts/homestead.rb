@@ -292,7 +292,7 @@ class Homestead
           end
 
           s.path = script_dir + "/serve-#{type}.sh"
-          s.args = [map_with_suffix, site['to'], site['port'] ||= http_port, site['ssl'] ||= https_port, site['php'] ||= '7.3', params ||= '', site['zray'] ||= 'false', site['exec'] ||= 'false', headers ||= '', rewrites ||= '', aliases_with_suffix.join(" "), site["map"]]
+          s.args = [map_with_suffix, site['to'], site['port'] ||= http_port, site['ssl'] ||= https_port, site['php'] ||= '7.1', params ||= '', site['zray'] ||= 'false', site['exec'] ||= 'false', headers ||= '', rewrites ||= '', aliases_with_suffix.join(" "), site["map"]]
 
           if site['zray'] == 'true'
             config.vm.provision 'shell' do |s|
