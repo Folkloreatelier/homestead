@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-declare -A params=$6     # Create an associative array
-declare -A headers=$9    # Create an associative array
+declare -A params=$6       # Create an associative array
+declare -A headers=$9      # Create an associative array
+declare -A rewrites=${10}  # Create an associative array
 paramsTXT=""
 if [ -n "$6" ]; then
    for element in "${!params[@]}"
@@ -18,6 +19,14 @@ if [ -n "$9" ]; then
       add_header ${element} ${headers[$element]};"
    done
 fi
+rewritesTXT=""
+if [ -n "${10}" ]; then
+   for element in "${!rewrites[@]}"
+   do
+      rewritesTXT="${rewritesTXT}
+      location ~ ${element} { if (!-f \$request_filename) { return 301 ${rewrites[$element]}; } }"
+   done
+fi
 
 if [ "$7" = "true" ] && [ "$5" = "7.2" ]
 then configureZray="
@@ -31,12 +40,14 @@ fi
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
-    server_name $1 ${10};
+    server_name $1 ${11};
     root \"$2\";
 
     index index.html index.htm index.php;
 
     charset utf-8;
+
+    $rewritesTXT
 
     location / {
         try_files \$uri /index.php?\$query_string;
@@ -75,8 +86,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/${11}.crt;
-    ssl_certificate_key /etc/nginx/ssl/${11}.key;
+    ssl_certificate     /etc/nginx/ssl/${12}.crt;
+    ssl_certificate_key /etc/nginx/ssl/${12}.key;
 }
 "
 
