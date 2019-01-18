@@ -3,7 +3,30 @@
 # If you would like to do some extra provisioning you may
 # add any commands you wish to this file and they will
 # be run after the Homestead machine is provisioned.
-#
-# If you have user-specific configurations you would like
-# to apply, you may also create user-customizations.sh,
-# which will be run after this script.
+
+# run apt-get update first, without it I was getting errors not finding the extensions
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes update
+
+# Install extensions
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install php-xdebug
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install php7.1-gd php7.2-gd php7.3-gd php-gd
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install php-imagick
+
+# Install packages
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install chromium-browser
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install xvfb
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install pulseaudio
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install ffmpeg
+source ./audiowaveform.sh
+
+# Update locales
+sudo locale-gen fr_CA
+sudo locale-gen fr_CA.UTF-8
+sudo locale-gen en_CA
+sudo locale-gen en_CA.UTF-8
+sudo update-locale
+
+# Restart PHP FPM
+sudo systemctl restart php7.1-fpm
+sudo systemctl restart php7.2-fpm
+sudo systemctl restart php7.3-fpm
