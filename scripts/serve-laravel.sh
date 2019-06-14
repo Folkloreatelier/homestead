@@ -59,7 +59,7 @@ block="server {
     $rewritesTXT
 
     location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
+        try_files \$uri /index.php?\$query_string;
         $headersTXT
     }
 
