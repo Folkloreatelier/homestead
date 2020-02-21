@@ -19,7 +19,7 @@ class Homestead
     config.vm.define settings['name'] ||= 'homestead'
     config.vm.box = settings['box'] ||= 'laravel/homestead'
     unless settings.has_key?('SpeakFriendAndEnter')
-      config.vm.box_version = settings['version'] ||= '>= 8.2.0'
+      config.vm.box_version = settings['version'] ||= '>= 9.0.0'
     end
     config.vm.hostname = settings['hostname'] ||= 'homestead'
 
@@ -33,7 +33,7 @@ class Homestead
     # Configure Additional Networks
     if settings.has_key?('networks')
       settings['networks'].each do |network|
-        config.vm.network network['type'], ip: network['ip'], bridge: network['bridge'] ||= nil, netmask: network['netmask'] ||= '255.255.255.0'
+        config.vm.network network['type'], ip: network['ip'], mac: network['mac'], bridge: network['bridge'] ||= nil, netmask: network['netmask'] ||= '255.255.255.0'
       end
     end
 
@@ -260,8 +260,6 @@ class Homestead
 
     # Install All The Configured Nginx Sites
     if settings.include? 'sites'
-      # socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
-      # settings['sites'].unshift(socket)
 
       domains = []
       suffixes = (settings["map_suffix"] ||= "").split(" ")
@@ -349,16 +347,16 @@ class Homestead
           # specific site type script (defaults to laravel)
           s.path = script_dir + "/site-types/#{type}.sh"
           s.args = [
-              site['map'],                  # $1
-              site['to'],                   # $2
-              site['port'] ||= http_port,   # $3
-              site['ssl'] ||= https_port,   # $4
-              site['php'] ||= '7.3',        # $5
-              params ||= '',                # $6
-              site['xhgui'] ||= '',         # $7
-              site['exec'] ||= 'false',     # $8
-              headers ||= '',               # $9
-              rewrites ||= '',              # $10
+              site['map'],                # $1
+              site['to'],                 # $2
+              site['port'] ||= http_port, # $3
+              site['ssl'] ||= https_port, # $4
+              site['php'] ||= '7.4',      # $5
+              params ||= '',              # $6
+              site['xhgui'] ||= '',       # $7
+              site['exec'] ||= 'false',   # $8
+              headers ||= '',             # $9
+              rewrites ||= '',             # $10
               map_with_suffix,              # $11
               aliases_with_suffix.join(" ") # $12
           ]
@@ -460,6 +458,11 @@ class Homestead
 
         config.vm.provision 'shell' do |s|
           s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.3/fpm/pool.d/www.conf"
+          s.args = [var['key'], var['value']]
+        end
+
+        config.vm.provision 'shell' do |s|
+          s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.4/fpm/pool.d/www.conf"
           s.args = [var['key'], var['value']]
         end
 
