@@ -263,7 +263,7 @@ class Homestead
 
       domains = []
       suffixes = (settings["map_suffix"] ||= "").split(" ")
-      suffixes.push("")
+      suffixes.unshift("")
 
       settings['sites'].each do |site|
         domains.push(site['map'])
