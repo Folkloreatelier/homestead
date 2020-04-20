@@ -48,8 +48,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.hostsupdater.remove_on_suspend = false
         config.hostsupdater.aliases = settings['sites'].map { |site| site['map'] }
     elsif Vagrant.has_plugin?('vagrant-hostmanager')
-        config.hostmanager.enabled = true
-        config.hostmanager.manage_host = true
+        config.hostmanager.enabled = false
+        config.hostmanager.manage_host = false
         config.hostmanager.aliases = settings['sites'].map { |site| site['map'] }
     end
 
