@@ -390,7 +390,8 @@ class Homestead
               headers ||= '',             # $9
               rewrites ||= '',             # $10
               map_with_suffix,              # $11
-              aliases_with_suffix.join(" ") # $12
+              aliases_with_suffix.join(" "), # $12
+              site['tus'] == true ? "true" : "false"   # $13
           ]
 
           # Should we use the wildcard ssl?

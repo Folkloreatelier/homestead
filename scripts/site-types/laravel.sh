@@ -37,6 +37,19 @@ location /xhgui {
 else configureXhgui=""
 fi
 
+if [ "${13}" = "true" ]; then
+    configureTus="
+    location /tus {
+        try_files \$uri \$uri/ /tus.php?\$query_string;
+    }
+    "
+    paramsTus="
+    fastcgi_request_buffering off;"
+else
+    configureTus=""
+    paramsTus=""
+fi
+
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
@@ -48,6 +61,8 @@ block="server {
     charset utf-8;
 
     $rewritesTXT
+
+    $configureTus
 
     location / {
         try_files \$uri /index.php?\$query_string;
@@ -71,6 +86,7 @@ block="server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         $paramsTXT
+        $paramsTus
 
         fastcgi_intercept_errors off;
         fastcgi_buffer_size 16k;
