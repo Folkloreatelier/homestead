@@ -40,6 +40,7 @@ fi
 if [ "${13}" = "true" ]; then
     configureTus="
     location /tus {
+        add_header Access-Control-Allow-Origin *;
         try_files \$uri \$uri/ /tus.php?\$query_string;
     }
     "
